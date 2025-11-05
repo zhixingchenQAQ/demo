@@ -9,7 +9,7 @@
 - 演示性的内存用户存储（可根据业务替换）
 - 内置 Dubbo 启动配置，并提供消费者/提供者过滤器
 - 针对 REST 与 Dubbo 调用的服务间 Token 验证过滤器
-- 默认提供 Dubbo、Zookeeper、Redis 与 MySQL 的连接示例配置
+- 默认提供 Dubbo、Zookeeper、Redis 与 MySQL 的连接示例配置，并在启动日志中打印这些基础设施的连接信息
 - 开启方法级别的安全注解支持
 
 ## 快速开始
@@ -77,19 +77,23 @@
     │   │           └── common
     │   │               └── security
     │   │                   ├── CommonSecurityApplication.java
+    │   │                   ├── InfrastructureConnectionLogger.java
     │   │                   ├── SecurityConfiguration.java
     │   │                   ├── ServiceAuthenticationProperties.java
     │   │                   ├── ServicePrincipal.java
     │   │                   ├── ServiceTokenAuthenticationFilter.java
-    │   │                   └── dubbo
-    │   │                       ├── DubboConfiguration.java
-    │   │                       ├── ServiceTokenConsumerFilter.java
-    │   │                       └── ServiceTokenProviderFilter.java
+    │   │                   ├── dubbo
+    │   │                   │   ├── DubboConfiguration.java
+    │   │                   │   ├── ServiceTokenConsumerFilter.java
+    │   │                   │   └── ServiceTokenProviderFilter.java
+    │   │                   └── zookeeper
+    │   │                       └── ZookeeperConfiguration.java
     │   └── resources
     │       ├── META-INF
     │       │   └── dubbo
     │       │       └── org.apache.dubbo.rpc.Filter
-    │       └── application.yml
+    │       ├── application.yml
+    │       └── logback-spring.xml
     └── test
         └── java
             └── com
