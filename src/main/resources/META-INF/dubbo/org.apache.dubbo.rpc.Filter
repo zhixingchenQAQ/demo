@@ -1,2 +1,3 @@
 serviceAuthConsumer=com.example.common.security.dubbo.ServiceTokenConsumerFilter
 serviceAuthProvider=com.example.common.security.dubbo.ServiceTokenProviderFilter
+serviceTokenProviderFilter=com.example.common.security.dubbo.ServiceTokenProviderFilter
