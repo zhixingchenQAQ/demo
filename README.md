@@ -8,6 +8,7 @@
 - 默认开启 HTTP Basic 与表单登录
 - 演示性的内存用户存储（可根据业务替换）
 - 内置 Dubbo 启动配置，并提供消费者/提供者过滤器
+- 内置可直接调用的 Dubbo `GreetingService` 及对应的 REST 测试入口
 - 针对 REST 与 Dubbo 调用的服务间 Token 验证过滤器
 - 默认提供 Dubbo、Zookeeper、Redis 与 MySQL 的连接示例配置，并在启动日志中打印这些基础设施的连接信息
 - 开启方法级别的安全注解支持
@@ -51,7 +52,17 @@
    - REST 请求需携带 `X-Service-Name` 与 `X-Service-Token` 请求头，模块会自动校验并注入 `ROLE_SERVICE` 权限。
    - Dubbo 调用会在消费者侧自动附带当前服务的认证信息，并在提供者侧进行拦截与验证。
 
-4. **自定义**
+4. **调用 Dubbo 测试接口**
+
+   应用启动后，可通过认证后的请求访问 `GET /api/dubbo/greet?name=tester` 来触发一次 Dubbo 调用。
+
+   ```bash
+   curl -u user:password "http://localhost:8080/api/dubbo/greet?name=dubbo"
+   ```
+
+   如果 Dubbo 注册中心、提供者与消费者均可用，接口会返回一条实时问候信息。
+
+5. **自定义**
 
    - 将 `SecurityConfiguration` 中的 `InMemoryUserDetailsManager` 替换为数据库、LDAP 或自定义的 `UserDetailsService`
    - 根据需要调整 `SecurityConfiguration` 中 `authorizeRequests` 的权限策略或增加角色判断
@@ -84,8 +95,14 @@
     │   │                   ├── ServiceTokenAuthenticationFilter.java
     │   │                   ├── dubbo
     │   │                   │   ├── DubboConfiguration.java
+    │   │                   │   ├── api
+    │   │                   │   │   └── GreetingService.java
+    │   │                   │   ├── provider
+    │   │                   │   │   └── GreetingServiceImpl.java
     │   │                   │   ├── ServiceTokenConsumerFilter.java
     │   │                   │   └── ServiceTokenProviderFilter.java
+    │   │                   └── web
+    │   │                       └── DubboTestController.java
     │   │                   └── zookeeper
     │   │                       └── ZookeeperConfiguration.java
     │   └── resources
