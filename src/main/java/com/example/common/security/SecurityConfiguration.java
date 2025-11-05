@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableConfigurationProperties(ServiceAuthenticationProperties.class)
 public class SecurityConfiguration {
 
@@ -26,12 +26,13 @@ public class SecurityConfiguration {
         ServiceTokenAuthenticationFilter serviceTokenAuthenticationFilter
     ) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/actuator/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .httpBasic(Customizer.withDefaults())
             .formLogin(Customizer.withDefaults())
             .addFilterBefore(serviceTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
