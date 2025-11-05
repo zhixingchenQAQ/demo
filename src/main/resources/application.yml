@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: common-security
+  datasource:
+    url: jdbc:mysql://localhost:3306/common_security?useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+
+security:
+  service:
+    current:
+      name: example-service
+      token: example-token
+    trusted-clients:
+      example-client: example-client-token
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: 20880
+  registry:
+    address: zookeeper://127.0.0.1:2181
+    timeout: 5000
+  consumer:
+    check: false
+    filter: serviceTokenConsumerFilter
+  provider:
+    filter: serviceTokenProviderFilter
